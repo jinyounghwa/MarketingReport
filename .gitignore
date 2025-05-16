@@ -109,7 +109,6 @@ coverage.xml
 *.webm
 
 # 이미지 파일
-*.jpg
 *.jpeg
 *.png
 *.gif

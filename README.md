@@ -2,7 +2,6 @@
   <img src="news.jpg" alt="news" width="600">
 </div>
 
-
 # 뉴스 리포트 생성기
 
 ## 프로젝트 개요
@@ -62,7 +61,7 @@ python app.py
 ```
 
 5. 웹 브라우저에서 접속
-```
+```bash
 http://localhost:5000
 ```
 

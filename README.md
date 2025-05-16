@@ -1,5 +1,6 @@
-
-![News Report](./news.jpg)
+<div align="center">
+  <img src="news.jpg" alt="news" width="600">
+</div>
 
 
 # 뉴스 리포트 생성기

@@ -1,0 +1,158 @@
+# Python 가상환경
+venv/
+env/
+ENV/
+.venv/
+pyvenv.cfg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Python 캐시 파일
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+.pytest_cache/
+.coverage
+coverage.xml
+*.cover
+
+# 로그 파일
+*.log
+logs/
+log/
+
+# 데이터베이스 파일
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+
+# 환경 변수 파일
+.env
+.env.*
+!.env.example
+
+# 개발 환경 설정 파일
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-*
+.project
+.pydevproject
+.settings/
+
+# 운영체제 파일
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+*~
+.directory
+desktop.ini
+
+# 임시 파일 및 디렉토리
+tmp/
+temp/
+.tmp/
+.temp/
+
+# 수집된 데이터 파일
+data/
+data_*/
+*.csv
+*.tsv
+*.json
+*.jsonl
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.parquet
+*.feather
+*.arrow
+*.xls
+*.xlsx
+*.ods
+
+# 배포 관련 파일
+dist/
+build/
+*.egg-info/
+*.egg
+*.whl
+
+# 테스트 관련 파일
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+
+# 대용량 미디어 파일
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mp3
+*.wav
+*.flac
+*.ogg
+*.webm
+
+# 이미지 파일
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.svg
+*.ico
+*.webp
+
+# 압축 파일
+*.zip
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.7z
+
+# 문서 파일
+*.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
+
+# 캐시 디렉토리
+.cache/
+__pycache__/
+.sass-cache/
+.npm/
+.yarn/
+node_modules/
+bower_components/
+
+# 기타 대용량 파일
+*.bin
+*.dat
+*.bak
+*.swp
+*.swo
+*.swn
+
+# 특정 디렉토리 전체 제외
+src/static/vendor/
+src/static/uploads/
+src/static/generated/
+src/static/node_modules/

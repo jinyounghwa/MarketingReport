@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3>데이터 수집</h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-4">
+                    트렌드 데이터를 수집하려면 아래 버튼을 클릭하세요. 데이터 수집에는 약간의 시간이 소요될 수 있습니다.
+                </p>
+                
+                <div class="alert alert-info mb-4">
+                    <ul>
+                        <li>네이버 뉴스 (카테고리별 크롤링)</li>
+                        <li>네이버 블로그</li>
+                    </ul>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button id="collectBtn" class="btn btn-primary btn-lg">데이터 수집 시작</button>
+                </div>
+                
+                <div id="statusContainer" class="mt-4 d-none">
+                    <div class="progress mb-3">
+                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="statusMessage" class="alert alert-secondary">
+                        데이터 수집 준비 중...
+                    </div>
+                </div>
+                
+                <div id="resultContainer" class="mt-4 d-none">
+                    <div id="resultMessage" class="alert alert-success">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="/" class="btn btn-outline-primary">대시보드로 이동</a>
+                        <a href="/trends" class="btn btn-outline-secondary">트렌드 리포트 보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const collectBtn = document.getElementById('collectBtn');
+    const statusContainer = document.getElementById('statusContainer');
+    const progressBar = document.getElementById('progressBar');
+    const statusMessage = document.getElementById('statusMessage');
+    const resultContainer = document.getElementById('resultContainer');
+    const resultMessage = document.getElementById('resultMessage');
+    
+    collectBtn.addEventListener('click', function() {
+        // 버튼 비활성화
+        collectBtn.disabled = true;
+        collectBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 데이터 수집 중...';
+        
+        // 상태 컨테이너 표시
+        statusContainer.classList.remove('d-none');
+        resultContainer.classList.add('d-none');
+        
+        // 진행 상태 업데이트
+        let progress = 0;
+        const progressInterval = setInterval(function() {
+            progress += 5;
+            if (progress > 90) {
+                clearInterval(progressInterval);
+            }
+            progressBar.style.width = progress + '%';
+            progressBar.setAttribute('aria-valuenow', progress);
+        }, 1000);
+        
+        // 상태 메시지 업데이트
+        statusMessage.textContent = '데이터 수집 중... 잠시만 기다려주세요.';
+        
+        // API 호출
+        fetch('/api/collect', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // 진행 상태 완료
+            clearInterval(progressInterval);
+            progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
+            
+            // 결과 표시
+            if (data.success) {
+                resultMessage.classList.remove('alert-danger');
+                resultMessage.classList.add('alert-success');
+                resultMessage.textContent = data.message;
+            } else {
+                resultMessage.classList.remove('alert-success');
+                resultMessage.classList.add('alert-danger');
+                resultMessage.textContent = data.message;
+            }
+            
+            resultContainer.classList.remove('d-none');
+            
+            // 버튼 활성화
+            collectBtn.disabled = false;
+            collectBtn.textContent = '데이터 수집 시작';
+        })
+        .catch(error => {
+            // 오류 처리
+            clearInterval(progressInterval);
+            statusMessage.textContent = '데이터 수집 중 오류가 발생했습니다: ' + error.message;
+            statusMessage.classList.remove('alert-secondary');
+            statusMessage.classList.add('alert-danger');
+            
+            // 버튼 활성화
+            collectBtn.disabled = false;
+            collectBtn.textContent = '데이터 수집 시작';
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>경제 트렌드 리포트</h1>
+            <div>
+                <form class="d-flex" method="get">
+                    <div class="form-check form-switch me-2 pt-2">
+                        <input class="form-check-input" type="checkbox" id="includeGlobal" name="include_global" {% if include_global %}checked{% endif %}>
+                        <label class="form-check-label" for="includeGlobal">세계 경제 포함</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">적용</button>
+                </form>
+            </div>
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-warning">
+            {{ error }}
+            <a href="/collect" class="btn btn-sm btn-primary ms-3">데이터 수집하기</a>
+        </div>
+        {% else %}
+        
+        <!-- 수집 정보 -->
+        <div class="alert alert-info mb-4">
+            <strong>수집 시간:</strong> {{ report.collection_time }}
+            <span class="ms-3"><strong>데이터 소스:</strong> {{ report.sources|join(', ') }}</span>
+        </div>
+        
+        <!-- 경제 키워드 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>경제 트렌드 키워드 Top 20</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for keyword in report.economy_keywords %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ loop.index }}. {{ keyword }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 국내 경제 뉴스 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>국내 경제 뉴스</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for news in report.domestic_economy_news[:12] %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ news.title }}</h6>
+                                <p class="card-text small text-muted">{{ news.summary }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <span class="badge bg-secondary">{{ news.press }}</span>
+                                    <span class="badge bg-info">{{ news.source }}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ news.url }}" target="_blank" class="btn btn-sm btn-outline-primary">기사 보기</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if not report.domestic_economy_news %}
+                    <div class="col-md-12">
+                        <div class="alert alert-secondary">
+                            국내 경제 뉴스 데이터가 없습니다.
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 세계 경제 뉴스 -->
+        {% if include_global %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>세계 경제 뉴스</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for news in report.global_economy_news[:12] %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ news.title }}</h6>
+                                <p class="card-text small text-muted">{{ news.summary }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <span class="badge bg-secondary">{{ news.press }}</span>
+                                    <span class="badge bg-info">{{ news.source }}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ news.url }}" target="_blank" class="btn btn-sm btn-outline-primary">기사 보기</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if not report.global_economy_news %}
+                    <div class="col-md-12">
+                        <div class="alert alert-secondary">
+                            세계 경제 뉴스 데이터가 없습니다.
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- 경제 관련 블로그 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>경제 관련 블로그</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for blog in report.economy_blogs[:9] %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ blog.title }}</h6>
+                                <p class="card-text small text-muted">{{ blog.summary }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <span class="badge bg-secondary">{{ blog.author }}</span>
+                                    <span class="badge bg-info">{{ blog.source }}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ blog.url }}" target="_blank" class="btn btn-sm btn-outline-primary">블로그 보기</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if not report.economy_blogs %}
+                    <div class="col-md-12">
+                        <div class="alert alert-secondary">
+                            경제 관련 블로그 데이터가 없습니다.
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

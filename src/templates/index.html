@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>대시보드</h1>
+            <div>
+                <a href="/economy" class="btn btn-info me-2">경제 리포트</a>
+                <a href="/collect" class="btn btn-primary">데이터 수집</a>
+            </div>
+        </div>
+        
+        {% if trends.top_keywords %}
+        <!-- 수집 정보 -->
+        <div class="alert alert-info mb-4">
+            <strong>수집 시간:</strong> {{ trends.collection_time }}
+        </div>
+        
+        <!-- 급상승 키워드 섹션 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>🔥 급상승 키워드</h5>
+            </div>
+            <div class="card-body">
+                {% for keyword in trends.top_keywords[:5] %}
+                <div class="alert alert-warning">
+                    <strong>{{ keyword }}</strong> <span class="badge bg-danger">New</span>
+                    <span class="ms-2">
+                        <i class="bi bi-arrow-up"></i> 상승
+                    </span>
+                </div>
+                {% endfor %}
+                
+                {% if not trends.top_keywords %}
+                <div class="alert alert-secondary">
+                    현재 수집된 키워드가 없습니다. 데이터를 수집해주세요.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 경제 트렌드 바로가기 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">경제 트렌드 분석</h5>
+                    <a href="/economy" class="btn btn-outline-primary">경제 리포트 보기</a>
+                </div>
+                <p class="text-muted mt-2 mb-0">네이버와 다음의 국내/세계 경제 뉴스와 트렌드를 한눈에 확인하세요.</p>
+            </div>
+        </div>
+        
+        <!-- 카테고리별 트렌드 요약 -->
+        <div class="row">
+            {% for category, keywords in trends.news_trends.by_category.items() %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6>{{ category }}</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for keyword in keywords[:5] %}
+                            <li class="list-group-item">{{ loop.index }}. {{ keyword }}</li>
+                            {% endfor %}
+                            
+                            {% if not keywords %}
+                            <li class="list-group-item">데이터가 없습니다.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+            {% if not trends.news_trends.by_category %}
+            <div class="col-md-12">
+                <div class="alert alert-secondary">
+                    카테고리별 트렌드 데이터가 없습니다. 데이터를 수집해주세요.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- 최근 뉴스 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>최근 뉴스</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if trends.news_trends.news_data %}
+                    {% for news in trends.news_trends.news_data[:6] %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ news.title }}</h6>
+                                <p class="card-text small text-muted">{{ news.summary }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <span class="badge bg-secondary">{{ news.press }}</span>
+                                    <span class="badge bg-info">{{ news.category }}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ news.url }}" target="_blank" class="btn btn-sm btn-outline-primary">기사 보기</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="col-md-12">
+                        <div class="alert alert-secondary">
+                            최근 뉴스 데이터가 없습니다. 데이터를 수집해주세요.
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- 데이터가 없는 경우 -->
+        <div class="alert alert-warning">
+            <h4 class="alert-heading">데이터가 없습니다!</h4>
+            <p>트렌드 데이터가 아직 수집되지 않았습니다. 데이터 수집 버튼을 클릭하여 데이터를 수집해주세요.</p>
+            <hr>
+            <p class="mb-0">
+                <a href="/collect" class="btn btn-primary">데이터 수집하기</a>
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 토스트 컨테이너 -->
+<div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>
+{% endblock %}

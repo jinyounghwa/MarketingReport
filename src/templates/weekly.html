@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>주간 트렌드 리포트</h1>
+            <div>
+                <form class="d-flex" method="get">
+                    <label class="form-label me-2 pt-2">종료일:</label>
+                    <input type="date" class="form-control me-2" name="end_date" value="{{ report.period.end }}">
+                    <button type="submit" class="btn btn-primary">조회</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 기간 정보 -->
+        <div class="alert alert-info mb-4">
+            <strong>분석 기간:</strong> {{ report.period.start }} ~ {{ report.period.end }}
+        </div>
+        
+        <!-- 주간 키워드 랭킹 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>주간 키워드 랭킹 Top 20</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for keyword in report.top_keywords %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ loop.index }}. {{ keyword }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 일별 트렌드 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>일별 트렌드</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="dailyTrendsAccordion">
+                    {% for date, data in report.daily_data.items() %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="collapse{{ loop.index }}">
+                                {{ date }} 트렌드
+                            </button>
+                        </h2>
+                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#dailyTrendsAccordion">
+                            <div class="accordion-body">
+                                <h6>Top 10 키워드</h6>
+                                <div class="row mb-3">
+                                    {% for keyword in data.top_keywords[:10] %}
+                                    <div class="col-md-3 mb-2">
+                                        <div class="alert alert-light">
+                                            {{ loop.index }}. {{ keyword }}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <h6>주요 뉴스</h6>
+                                <div class="row">
+                                    {% for news in data.news_trends.news_data[:6] %}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ news.title }}</h6>
+                                                <div class="d-flex justify-content-between mt-2">
+                                                    <span class="badge bg-secondary">{{ news.press }}</span>
+                                                    <span class="badge bg-info">{{ news.category }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <a href="{{ news.url }}" target="_blank" class="btn btn-sm btn-outline-primary">기사 보기</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

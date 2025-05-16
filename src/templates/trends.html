@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>트렌드 리포트</h1>
+            <div>
+                <form class="d-flex" method="get">
+                    <input type="date" class="form-control me-2" name="date" value="{{ date }}" max="{{ date }}">
+                    <select class="form-select me-2" name="category">
+                        <option value="all" {% if category == 'all' %}selected{% endif %}>전체</option>
+                        <option value="정치" {% if category == '정치' %}selected{% endif %}>정치</option>
+                        <option value="경제" {% if category == '경제' %}selected{% endif %}>경제</option>
+                        <option value="사회" {% if category == '사회' %}selected{% endif %}>사회</option>
+                        <option value="생활/문화" {% if category == '생활/문화' %}selected{% endif %}>생활/문화</option>
+                        <option value="IT/과학" {% if category == 'IT/과학' %}selected{% endif %}>IT/과학</option>
+                        <option value="세계" {% if category == '세계' %}selected{% endif %}>세계</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">조회</button>
+                </form>
+            </div>
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-warning">
+            {{ error }}
+            <a href="/collect" class="btn btn-sm btn-primary ms-3">데이터 수집하기</a>
+        </div>
+        {% else %}
+        
+        <!-- 수집 정보 -->
+        <div class="alert alert-info mb-4">
+            <strong>수집 시간:</strong> {{ trends.collection_time }}
+        </div>
+        
+        <!-- 키워드 랭킹 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>키워드 랭킹 Top 10</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for keyword in trends.top_keywords[:10] %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ loop.index }}. {{ keyword }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 뉴스 섹션 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>주요 뉴스</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% set news_list = trends.news_trends.news_data %}
+                    {% if category != 'all' %}
+                        {% set news_list = [] %}
+                        {% for news in trends.news_trends.news_data %}
+                            {% if news.category == category %}
+                                {% set news_list = news_list + [news] %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% for news in news_list[:12] %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ news.title }}</h6>
+                                <p class="card-text small text-muted">{{ news.summary }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <span class="badge bg-secondary">{{ news.press }}</span>
+                                    <span class="small text-muted">{{ news.date }}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ news.url }}" target="_blank" class="btn btn-sm btn-outline-primary">기사 보기</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 블로그 섹션 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>관련 블로그</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for blog in trends.blog_trends.all_blogs[:9] %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ blog.title }}</h6>
+                                <p class="card-text small text-muted">{{ blog.summary }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <span class="badge bg-info">{{ blog.author }}</span>
+                                    <span class="small text-muted">{{ blog.date }}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ blog.url }}" target="_blank" class="btn btn-sm btn-outline-primary">블로그 보기</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 카테고리별 키워드 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>카테고리별 키워드</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for category_name, keywords in trends.news_trends.by_category.items() %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h6>{{ category_name }}</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    {% for keyword in keywords[:5] %}
+                                    <li class="list-group-item">{{ loop.index }}. {{ keyword }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

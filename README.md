@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img src="news.jpg" alt="News Report" width="600">
+  <img src="./news.jpg" alt="News Report" width="600">
 </div>
 
 
